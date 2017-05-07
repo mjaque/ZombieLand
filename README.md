@@ -24,3 +24,7 @@ Juego de Zombies con JavaFX
 	* Sacar jugador como variable global.
 	* Mover jugador.
 	* Establecer límites.
+
+## Iteración 4:
+1. Cambiar el puntero del ratón por punto de mira.
+2. Rotar el jugador para mantenerlo apuntando al punto de mira.

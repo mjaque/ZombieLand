@@ -5,11 +5,13 @@ import javafx.application.Application;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
@@ -23,13 +25,17 @@ public class ZombieLand extends Application implements EventHandler {
 	double ESCALA_JUGADOR = 0.5;// px
 	double MAXX = ANCHO - ANCHO_JUGADOR * ESCALA_JUGADOR;	//Límite de movimiento
 	double MAXY = ALTO - ALTO_JUGADOR * ESCALA_JUGADOR - 25;	//Límite de movimiento
-	//(hay 15 px de barra de ventana)
+	//(hay 25 px de barra de ventana)
 	
 
 	ImageView jugador = null;
 	double VELOCIDAD_JUGADOR = 3;
 	double velXJugador = 0;
 	double velYJugador = 0;
+	double dirJugador = 0;
+	
+	double posMouseX = 0;
+	double posMouseY = 0;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -61,6 +67,11 @@ public class ZombieLand extends Application implements EventHandler {
 		// 3.1 Recibir eventos
 		escena.setOnKeyPressed(this);
 		escena.setOnKeyReleased(this);
+		escena.setOnMouseMoved(this);
+		
+		//4.1 Poner punto de mira
+		Image imgAim = new Image("recursos/aim.png");
+		escena.setCursor(new ImageCursor(imgAim));
 
 		ventana.show();
 		
@@ -89,6 +100,15 @@ public class ZombieLand extends Application implements EventHandler {
 			jugador.setX(MAXX);
 		if (jugador.getY() > MAXY)
 			jugador.setY(MAXY);
+		
+		// Calculamos la dirección del jugador (hacia el puntero)
+		double jugadorCentroX = jugador.getX() + (ANCHO_JUGADOR / 2 * ESCALA_JUGADOR);
+		double jugadorCentroY = jugador.getY() + (ALTO_JUGADOR / 2 * ESCALA_JUGADOR);
+		double dX = posMouseX - jugador.getX();
+		double dY = posMouseY - jugador.getY();
+		dirJugador = Math.toDegrees(Math.atan2(dY, dX));
+		jugador.setRotate(dirJugador);
+
 	}
 
 	// Método para la gestión de eventos
@@ -113,6 +133,11 @@ public class ZombieLand extends Application implements EventHandler {
 				velXJugador = 0;
 			if (ke.getCode().equals(KeyCode.W) || ke.getCode().equals(KeyCode.S))
 				velYJugador = 0;
+		}
+		if (event.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
+			MouseEvent me = (MouseEvent) event;
+			posMouseX = me.getSceneX();
+			posMouseY = me.getSceneY();
 		}
 
 	}
