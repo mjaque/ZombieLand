@@ -28,3 +28,11 @@ Juego de Zombies con JavaFX
 ## Iteración 4:
 1. Cambiar el puntero del ratón por punto de mira.
 2. Rotar el jugador para mantenerlo apuntando al punto de mira.
+
+## Iteración 5:
+1. Crear ImageView de disparo.
+2. Detectamos el disparo y colocamos la bala.
+3. Movemos la bala.
+4. Comprobar límites.
+
+
