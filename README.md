@@ -14,3 +14,13 @@ Juego de Zombies con JavaFX
 	* Crear Image e ImageView.
 	* Añadir a la escena.
 	* Colocar y Redimensionar. 
+	
+## Iteración 3:
+1. Mover el jugador con A, D, W, S:
+	* Crear atributos de velocidad.
+	* Recibir keyPressed y keyReleased.
+	* Crear handle y establecer velocidades.
+2. Crear animador.
+	* Sacar jugador como variable global.
+	* Mover jugador.
+	* Establecer límites.
