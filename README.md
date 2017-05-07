@@ -1,11 +1,16 @@
 # ZombieLand
 Juego de Zombies con JavaFX
 
-## It. 1:
+## Iteración 1:
 1. Crear una ventana:
-	* de ancho y alto definido.
-	* con título.
-	* no redimensionable.
+	* De ancho y alto definido.
+	* Con título.
+	* No redimensionable.
 2. Crear una escena, de fondo gris
 	* con un Grupo raíz.
 	
+## Iteración 2:
+1. Añadir el jugador.
+	* Crear Image e ImageView.
+	* Añadir a la escena.
+	* Colocar y Redimensionar. 
