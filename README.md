@@ -35,4 +35,28 @@ Juego de Zombies con JavaFX
 3. Movemos la bala.
 4. Comprobar límites.
 
+## Iteración 6:
+1. Crear ImageView de Zombie.
+2. Poner el Zombie en un borde aleatorio.
+3. Mover Zombie.
+4. Rotar el zombie
+5. Detectar colisión del disparo.
+6. Controlar vida Zombie y puntos.
+7. Detectar colisión con Zombie.
+
+## Iteración 7:
+1. Múltiples balas.
+2. Múltiples zombies.
+3. Fondo.
+
+## Refactorización 1:
+1. Clase Jugador.
+2. Clase Zombie.
+3. Clase Disparo.
+4. Clase Escenario.
+
+
+
+
+
 
