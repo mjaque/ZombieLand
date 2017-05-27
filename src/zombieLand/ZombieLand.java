@@ -59,19 +59,13 @@ public class ZombieLand extends Application implements EventHandler {
 	double ANCHO_BALA = 15;// px
 	double VELOCIDAD_BALA = 5;
 
-	// Atributos del Zombie
-	ArrayList<Group> zombies = new ArrayList<>();
+	// Atributos de Zombies
+	ArrayList<Zombie> zombies = new ArrayList<>();
 	Long tiempoSalidaUltimoZombie = null;
 	Double intervaloSalida = 2.0; // empezamos saliendo cada 2 segundos
 	Integer contadorZombies = 0; // cuenta los zombies que han salido
 	Integer incrementarCada = 5; // Cada cinco zombies incrementamos la
 									// velocidad de salida
-	HashMap<Group, Integer> vidaZombies = new HashMap<>();
-	double ANCHO_ZOMBIE = 318;// px
-	double ALTO_ZOMBIE = 294;// px
-	double ESCALA_ZOMBIE = Jugador.ESCALA;// px
-	double VELOCIDAD_ZOMBIE = 1;
-	int VIDA_ZOMBIE = 3;
 
 	// Atributos de la partida
 	int puntos = 0;
@@ -143,31 +137,28 @@ public class ZombieLand extends Application implements EventHandler {
 			}
 
 			// 6.5 Detectar colisión de disparo con zombies.
-			Iterator<Group> itZombie = zombies.iterator();
+			Iterator<Zombie> itZombie = zombies.iterator();
 			while (itZombie.hasNext()) {
-				Group zombie = itZombie.next();
+				Zombie zombie = itZombie.next();
 				Rectangle zombieAreaDisparo = (Rectangle) zombie.getChildren().get(1);
 				Bounds limitesADZombie = zombieAreaDisparo.localToScene(zombieAreaDisparo.getBoundsInParent());
 				if (limitesADZombie.contains(bala.getBoundsInParent())) {
 					// 6.6 Controlamos vida Zombie y puntos.
 					itBalas.remove();
 					raiz.getChildren().remove(bala);
-					int vida = vidaZombies.get(zombie);
-					if (--vida <= 0) {
+					if (--zombie.vida <= 0) {
 						// Quitamos el zombie
 						raiz.getChildren().remove(zombie);
-						vidaZombies.remove(zombie);
 						itZombie.remove();
 						puntos++;
 						actualizarPuntos();
-					} else
-						vidaZombies.put(zombie, vida);
+					} 
 				}
 			}
 		}
 
 		//Animación de los zombies
-		Iterator<Group> itZombie = zombies.iterator();
+		Iterator<Zombie> itZombie = zombies.iterator();
 		while (itZombie.hasNext()) {
 			Group zombie = itZombie.next();
 			Rectangle zombieAreaContacto = (Rectangle) zombie.getChildren().get(1);
@@ -184,13 +175,12 @@ public class ZombieLand extends Application implements EventHandler {
 			double dx = jugador.getTranslateX() - zombie.getTranslateX();
 			double dy = jugador.getTranslateY() - zombie.getTranslateY();
 			double angulo = Math.atan2(dy, dx);
-			zombie.setTranslateX(zombie.getTranslateX() + VELOCIDAD_ZOMBIE * Math.cos(angulo));
-			zombie.setTranslateY(zombie.getTranslateY() + VELOCIDAD_ZOMBIE * Math.sin(angulo));
+			zombie.setTranslateX(zombie.getTranslateX() + Zombie.VELOCIDAD * Math.cos(angulo));
+			zombie.setTranslateY(zombie.getTranslateY() + Zombie.VELOCIDAD * Math.sin(angulo));
 
 			// 6.4 Rotamos el zombie hacia el jugador
 			zombie.setRotate(Math.toDegrees(angulo));
 		}
-
 	}
 
 	private void crearBala() {
@@ -215,27 +205,8 @@ public class ZombieLand extends Application implements EventHandler {
 	}
 
 	public void crearZombie() {
-		Group zombie = null;
-		ImageView ivZombie = null;
-		Rectangle zombieAreaDisparo = new Rectangle(60, 100, 100, 120);
-
-		// 2.1 Crear el zombie
-		zombie = new Group();
-		Image imgZombie = new Image(
-				this.getClass().getClassLoader().getResourceAsStream("recursos/skeleton-attack_0.png"));
-		ivZombie = new ImageView(imgZombie);
-		// Ajustamos el ivZombie a la escala del zombie
-		ivZombie.setFitWidth(ANCHO_ZOMBIE * ESCALA_ZOMBIE);
-		ivZombie.setFitHeight(ALTO_ZOMBIE * ESCALA_ZOMBIE);
-		// Ajustamos el área de disparo a la escala del zombie
-		zombieAreaDisparo.setX(zombieAreaDisparo.getX() * ESCALA_ZOMBIE);
-		zombieAreaDisparo.setY(zombieAreaDisparo.getY() * ESCALA_ZOMBIE);
-		zombieAreaDisparo.setWidth(zombieAreaDisparo.getWidth() * ESCALA_ZOMBIE);
-		zombieAreaDisparo.setHeight(zombieAreaDisparo.getHeight() * ESCALA_ZOMBIE);
-		zombieAreaDisparo.setFill(Color.TRANSPARENT);
-		zombie.getChildren().add(ivZombie);
-		zombie.getChildren().add(zombieAreaDisparo);
-
+		Zombie zombie = new Zombie();
+		
 		// Ponemos al zombie en posición inicial aleatoria
 		double aleatorio = Math.random();
 		if (aleatorio < 0.25) {
@@ -253,10 +224,8 @@ public class ZombieLand extends Application implements EventHandler {
 		}
 
 		zombies.add(zombie);
-		vidaZombies.put(zombie, VIDA_ZOMBIE);
 		raiz.getChildren().add(zombie);
 		contadorZombies++;
-
 	}
 
 	private void gameOver() {
