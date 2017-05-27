@@ -7,11 +7,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class Zombie extends Group{
-	static double ANCHO = 318;// px
-	static double ALTO = 294;// px
-	static double ESCALA = Jugador.ESCALA;// px
-	static double VELOCIDAD = 1;
-	static Image IMG = new Image(
+	static final double ANCHO = 318;// px
+	static final double ALTO = 294;// px
+	static final double ESCALA = Jugador.ESCALA;// px
+	static final double VELOCIDAD = 1;
+	static final Image IMG = new Image(
 			Zombie.class.getClassLoader().getResourceAsStream("recursos/skeleton-attack_0.png"));
 	
 	ImageView ivZombie = null;

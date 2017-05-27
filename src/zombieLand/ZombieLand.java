@@ -1,7 +1,6 @@
 package zombieLand;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import javafx.animation.AnimationTimer;
@@ -24,7 +23,6 @@ import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -55,9 +53,7 @@ public class ZombieLand extends Application implements EventHandler {
 	double posMouseY = 0;
 
 	// Atributos de la bala
-	ArrayList<ImageView> balas = new ArrayList<>();
-	double ANCHO_BALA = 15;// px
-	double VELOCIDAD_BALA = 5;
+	ArrayList<Bala> balas = new ArrayList<>();
 
 	// Atributos de Zombies
 	ArrayList<Zombie> zombies = new ArrayList<>();
@@ -122,11 +118,10 @@ public class ZombieLand extends Application implements EventHandler {
 		}
 
 		// 7.1 Animación de las balas
-		// for (ImageView bala : balas){ //Para cada bala de la lista
-		Iterator<ImageView> itBalas = balas.iterator();
+		Iterator<Bala> itBalas = balas.iterator();
 		while (itBalas.hasNext()) {
 			ImageView bala = itBalas.next();
-			bala.setX(bala.getX() + VELOCIDAD_BALA);
+			bala.setX(bala.getX() + Bala.VELOCIDAD);
 
 			// Control de límites (la bala está transformada por rotación)
 			if (bala.getBoundsInParent().getMinX() < 0 || bala.getBoundsInParent().getMinY() < 0
@@ -185,12 +180,8 @@ public class ZombieLand extends Application implements EventHandler {
 
 	private void crearBala() {
 		// 5.1 Crear la bala
-		Image imgBala = new Image(this.getClass().getClassLoader().getResourceAsStream("recursos/bala.png"));
-		ImageView bala = new ImageView(imgBala);
+		Bala bala = new Bala();
 		balas.add(bala); // La añadimos a la lista de balas
-		bala.setFitWidth(ANCHO_BALA);
-		bala.setPreserveRatio(true);
-		bala.setVisible(false);
 		// Colocamos la bala
 		bala.setX(jugador.getTranslateX() + Jugador.PISTOLA_X * Jugador.ESCALA);
 		bala.setY(jugador.getTranslateY() + Jugador.PISTOLA_Y * Jugador.ESCALA);
