@@ -42,25 +42,12 @@ public class ZombieLand extends Application implements EventHandler {
 	// Atributos del Escenario
 	Group raiz = null;
 	AnimationTimer anim = null;
-
-	// Atributos del Jugador
-	Group jugador = new Group();
-	Polygon jugadorAreaContacto = new Polygon();
-	double ANCHO_JUGADOR = 253;// px
-	double ALTO_JUGADOR = 216;// px
-	double ESCALA_JUGADOR = 0.5;// px
-	double VELOCIDAD_JUGADOR = 3;
-	double velXJugador = 0;
-	double velYJugador = 0;
-	double dirJugador = 0;
-	Double[] ptosContacto = {84.0,195.0, 45.0,150.0, 110.0,66.0, 181.0, 104.0};
-	// Posición de la boca de la pistola en la imagen del jugador
-	double PISTOLA_X = 241; // px
-	double PISTOLA_Y = 160; // px
+	
+	Jugador jugador = new Jugador();
 
 	// Límites de movimiento
-	double MAXX = ANCHO - ANCHO_JUGADOR * ESCALA_JUGADOR;
-	double MAXY = ALTO - ALTO_JUGADOR * ESCALA_JUGADOR - 25;
+	double MAXX = ANCHO - Jugador.ANCHO * Jugador.ESCALA;
+	double MAXY = ALTO - Jugador.ALTO * Jugador.ESCALA - 25;
 
 	// (hay 25 px de barra de ventana)
 	// Posición del ratón
@@ -82,7 +69,7 @@ public class ZombieLand extends Application implements EventHandler {
 	HashMap<Group, Integer> vidaZombies = new HashMap<>();
 	double ANCHO_ZOMBIE = 318;// px
 	double ALTO_ZOMBIE = 294;// px
-	double ESCALA_ZOMBIE = ESCALA_JUGADOR;// px
+	double ESCALA_ZOMBIE = Jugador.ESCALA;// px
 	double VELOCIDAD_ZOMBIE = 1;
 	int VIDA_ZOMBIE = 3;
 
@@ -99,8 +86,8 @@ public class ZombieLand extends Application implements EventHandler {
 	}
 
 	public void animar(long now) {
-		jugador.setTranslateX(jugador.getTranslateX() + velXJugador);
-		jugador.setTranslateY(jugador.getTranslateY() + velYJugador);
+		jugador.setTranslateX(jugador.getTranslateX() + jugador.velX);
+		jugador.setTranslateY(jugador.getTranslateY() + jugador.velY);
 
 		// Establecemos los límites
 		if (jugador.getTranslateX() < 0)
@@ -114,15 +101,15 @@ public class ZombieLand extends Application implements EventHandler {
 
 		// Calculamos la dirección del jugador (hacia el puntero), respecto a la
 		// boca de la pistola
-		double jugadorCentroX = jugador.getTranslateX() + (ANCHO_JUGADOR / 2 * ESCALA_JUGADOR);
-		double jugadorCentroY = jugador.getTranslateY() + (ALTO_JUGADOR / 2 * ESCALA_JUGADOR);
+		double jugadorCentroX = jugador.getTranslateX() + (Jugador.ANCHO / 2 * Jugador.ESCALA);
+		double jugadorCentroY = jugador.getTranslateY() + (Jugador.ALTO / 2 * Jugador.ESCALA);
 
 		// calculo de la corrección para apuntar con la pistola
-		double h = (PISTOLA_Y - ALTO_JUGADOR / 2) * ESCALA_JUGADOR;
+		double h = (Jugador.PISTOLA_Y - Jugador.ALTO / 2) * Jugador.ESCALA;
 		double px = posMouseX - h * Math.cos(Math.toRadians(90 + jugador.getRotate()));
 		double py = posMouseY - h * Math.sin(Math.toRadians(90 + jugador.getRotate()));
-		dirJugador = Math.toDegrees(Math.atan2(py - jugadorCentroY, px - jugadorCentroX));
-		jugador.setRotate(dirJugador);
+		jugador.dirJugador = Math.toDegrees(Math.atan2(py - jugadorCentroY, px - jugadorCentroX));
+		jugador.setRotate(jugador.dirJugador);
 
 		// 7.2 Multiples zombies
 		// salida de nuevos zombies
@@ -186,7 +173,7 @@ public class ZombieLand extends Application implements EventHandler {
 			Rectangle zombieAreaContacto = (Rectangle) zombie.getChildren().get(1);
 
 			// 6.7 Detectar colisión del zombie con jugador
-			Bounds limitesACJugador = jugadorAreaContacto.localToScene(jugadorAreaContacto.getBoundsInParent());
+			Bounds limitesACJugador = jugador.areaContacto.localToScene(jugador.areaContacto.getBoundsInParent());
 			Bounds limitesACZombie = zombieAreaContacto.localToScene(zombieAreaContacto.getBoundsInParent());
 			if (limitesACZombie.intersects(limitesACJugador)) {
 				gameOver();
@@ -215,12 +202,12 @@ public class ZombieLand extends Application implements EventHandler {
 		bala.setPreserveRatio(true);
 		bala.setVisible(false);
 		// Colocamos la bala
-		bala.setX(jugador.getTranslateX() + PISTOLA_X * ESCALA_JUGADOR);
-		bala.setY(jugador.getTranslateY() + PISTOLA_Y * ESCALA_JUGADOR);
+		bala.setX(jugador.getTranslateX() + Jugador.PISTOLA_X * Jugador.ESCALA);
+		bala.setY(jugador.getTranslateY() + Jugador.PISTOLA_Y * Jugador.ESCALA);
 		bala.getTransforms().clear();
 		// La giramos respecto al centro del jugador
-		double jugadorCentroX = jugador.getTranslateX() + (ANCHO_JUGADOR / 2 * ESCALA_JUGADOR);
-		double jugadorCentroY = jugador.getTranslateY() + (ALTO_JUGADOR / 2 * ESCALA_JUGADOR);
+		double jugadorCentroX = jugador.getTranslateX() + (Jugador.ANCHO / 2 * Jugador.ESCALA);
+		double jugadorCentroY = jugador.getTranslateY() + (Jugador.ALTO / 2 * Jugador.ESCALA);
 		bala.getTransforms().add(new Rotate(jugador.getRotate(), jugadorCentroX, jugadorCentroY));
 		bala.setVisible(true);
 
@@ -289,21 +276,21 @@ public class ZombieLand extends Application implements EventHandler {
 			KeyEvent ke = (KeyEvent) event;
 
 			if (ke.getCode().equals(KeyCode.A))
-				velXJugador = -VELOCIDAD_JUGADOR;
+				jugador.velX = -Jugador.VELOCIDAD;
 			if (ke.getCode().equals(KeyCode.D))
-				velXJugador = +VELOCIDAD_JUGADOR;
+				jugador.velX = +Jugador.VELOCIDAD;
 			if (ke.getCode().equals(KeyCode.W))
-				velYJugador = -VELOCIDAD_JUGADOR;
+				jugador.velY = -Jugador.VELOCIDAD;
 			if (ke.getCode().equals(KeyCode.S))
-				velYJugador = +VELOCIDAD_JUGADOR;
+				jugador.velY = +Jugador.VELOCIDAD;
 		}
 		if (event.getEventType().equals(KeyEvent.KEY_RELEASED)) {
 			KeyEvent ke = (KeyEvent) event;
 
 			if (ke.getCode().equals(KeyCode.A) || ke.getCode().equals(KeyCode.D))
-				velXJugador = 0;
+				jugador.velX = 0;
 			if (ke.getCode().equals(KeyCode.W) || ke.getCode().equals(KeyCode.S))
-				velYJugador = 0;
+				jugador.velY = 0;
 		}
 		if (event.getEventType().equals(MouseEvent.MOUSE_MOVED)) {
 			MouseEvent me = (MouseEvent) event;
@@ -345,24 +332,11 @@ public class ZombieLand extends Application implements EventHandler {
 		reg.setBackground(background);
 		raiz.getChildren().add(reg);
 
-		
-		// 2.1 Crear el jugador
-		Image imgJugador = new Image(
-				this.getClass().getClassLoader().getResourceAsStream("recursos/survivor-idle_handgun_0.png"));
-		ImageView ivJugador = new ImageView(imgJugador);
-		ivJugador.setFitWidth(ANCHO_JUGADOR * ESCALA_JUGADOR);
-		ivJugador.setFitHeight(ALTO_JUGADOR * ESCALA_JUGADOR);
-		jugador.getChildren().add(ivJugador);
-		ArrayList<Double> ptosContactoEscalados = new ArrayList<>();
-		for (Double coords: ptosContacto)
-			ptosContactoEscalados.add(coords * ESCALA_JUGADOR);
-		jugadorAreaContacto.getPoints().addAll(ptosContactoEscalados);
-		jugadorAreaContacto.setFill(Color.TRANSPARENT);
-		jugador.getChildren().add(jugadorAreaContacto);
-		jugador.setTranslateX(ANCHO / 2 - (ANCHO_JUGADOR / 2) * ESCALA_JUGADOR);
-		jugador.setTranslateY(ALTO / 2 - (ALTO_JUGADOR / 2) * ESCALA_JUGADOR);
-		
+		//Añadimos el jugador al centro de la escena.
 		raiz.getChildren().add(jugador);
+		jugador.setTranslateX(ANCHO / 2 - (Jugador.ANCHO / 2) * Jugador.ESCALA);
+		jugador.setTranslateY(ALTO / 2 - (Jugador.ALTO / 2) * Jugador.ESCALA);
+
 
 		// 3.1 Recibir eventos
 		escena.setOnKeyPressed(this);
